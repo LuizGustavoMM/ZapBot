@@ -92,9 +92,10 @@ def retrieveData():
             string = stringSpace
         linhas[i] = string
     
+    # Filtro para datas de aniversário erradas
     if linhas[2].count('/') == 2:
         linhas[2] = (linhas[2][:5])
-    print(linhas)
+
     return linhas # Retorna linhas formatadas
 
 
