@@ -27,6 +27,7 @@ def splitLines(stringMensagem):
         strLinha = linha
         stringSpl = strLinha.split(":", 1)
         stringSpace = stringSpl[1]
+        print(stringSpace[1])
         string = stringSpace[1:]
         print(string)
 

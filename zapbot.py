@@ -1,0 +1,144 @@
+import requests
+import json
+import sys
+
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from requests.structures import CaseInsensitiveDict
+from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
+from time import sleep
+
+### Variáveis de request globais
+urlGetContent = 'https://webhook.site/token/9fcab138-8daf-436a-bf83-91c87c93e8ba'
+headers = CaseInsensitiveDict()
+headers["Accept"] = "application/json"
+
+def main():
+    registerCliente()
+
+
+
+### Selecionar o cliente a ser cadastrado
+def selectCliente():
+    content = json.loads((requests.get(urlGetContent+'/requests', headers=headers).content))
+    data = content['data']
+    nome = input("Insira o nome do cliente a ser cadastrado: ").lower()
+
+    numFound = 0
+    listaNomes = []
+    for pessoa in data:
+        if nome in pessoa['content'].lower():
+            dados = (pessoa['content'])
+            nomeCompleto = (dados.partition('\n')[0])
+            listaNomes.append((nomeCompleto.split(":")[1]))
+            numFound = numFound + 1
+
+    try: # Exception handling caso não ache ninguém
+        if numFound > 1: # Case handling caso a busca retorne mais de um nome
+            i = 1
+            nomeEscolhido = ""
+            print("Encontramos múltiplas ocorrências para esse nome, quais delas gostaria de selecionar?\n")
+            for nome in listaNomes:
+                print("{0}. {1}".format(i, nome))
+                i = i + 1
+            escolhido = input("Digite o número da sua escolha: ")
+            escolhido = int(escolhido)-1
+            i = 0
+            for nome in listaNomes:
+                if i == escolhido:
+                    nomeEscolhido = nome
+                i = i + 1
+            
+        else:
+            nomeEscolhido = listaNomes[0]
+
+    except IndexError:
+        print("Não encontramos esse usuário no sistema, por favor tente novamente.")
+        sys.exit()
+
+    print("Ok! O sistema irá cadastrar {0}".format(nomeEscolhido))
+    
+    return nomeEscolhido # Retorna o nome escolhido
+
+
+
+### Busca dados do nome escolhido
+def retrieveData():
+    cliente = selectCliente()
+    content = json.loads((requests.get(urlGetContent+'/requests', headers=headers).content))
+    data = content['data']
+
+    for pessoa in data:
+        if cliente in pessoa['content']:
+            dados = (pessoa['content'])
+
+    # Script de formatação de dados
+    linhas = []
+    linha = ''
+    for char in dados:
+        if char != '\n':
+            linha += char
+        else:
+            linhas.append(linha)
+            linha = ''
+    for i in range(len(linhas)):
+        strLinha = linhas[i]
+        stringSpl = strLinha.split(":", 1)
+        stringSpace = stringSpl[1]
+        if (stringSpace[0] == ' '):
+            string = stringSpace[1:]
+        else:
+            string = stringSpace
+        linhas[i] = string
+    
+    if linhas[2].count('/') == 2:
+        linhas[2] = (linhas[2][:5])
+    print(linhas)
+    return linhas # Retorna linhas formatadas
+
+
+
+### Registrar cliente no Maryhelp
+def registerCliente():
+    dados = retrieveData()
+
+    chrome_options = Options()
+    chrome_options.add_experimental_option("detach", True)
+    navegador = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+
+    # Abrindo navegador e Maryhelp
+    navegador.get("https://app.maryhelp.net/clientes/cadastro")
+    navegador.maximize_window()
+
+    # Logando no Maryhelp
+    navegador.find_element_by_xpath('//*[@id="txtUser"]').send_keys("JOZEFALEIRO")
+    navegador.find_element_by_xpath('//*[@id="txtPassword"]').send_keys("123456")
+    navegador.find_element_by_xpath('//*[@id="login-form"]/button').click()
+
+    # Caso já tenha alguém conectado, confirmar login
+    try:
+        logado = navegador.find_element_by_xpath("//*[contains(text(), 'ATENÇÃO!')]")
+        if logado:
+            navegador.find_element_by_xpath('//*[@id="error_modal"]/div/div/div/div[2]/button[1]').click()
+    except:
+        pass
+
+    navegador.get("https://app.maryhelp.net/clientes/cadastro")
+    sleep(2)
+
+    # Selecionando pessoa física
+    navegador.find_element_by_xpath('//*[@id="TypePhysics"]').click()
+    sleep(3)
+
+    # Inserindo dados nos campos
+    navegador.find_element_by_xpath('//*[@id="txtName"]').send_keys(dados[0])
+    navegador.find_element_by_xpath('//*[@id="txtCPF"]').send_keys(Keys.HOME, dados[1])
+    navegador.find_element_by_xpath('//*[@id="txtBirthDate"]').send_keys(Keys.HOME, dados[2])
+    navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[3])
+    navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(Keys.HOME, dados[4])
+    navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[2]/div/input').send_keys(dados[6])
+    navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[5])
+
+if __name__ == "__main__":
+    main()

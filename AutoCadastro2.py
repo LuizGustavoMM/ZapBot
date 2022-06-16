@@ -1,3 +1,4 @@
+from asyncore import read
 from multiprocessing.connection import wait
 import webbrowser
 import selenium
@@ -23,8 +24,15 @@ navegador.find_element_by_xpath('//*[@id="password"]').send_keys("123456")
 navegador.find_element_by_xpath('//*[@id="app"]/div[1]/div/form/button').click()
 sleep(10)
 
+numero = input("Insira o nome ou número do contato: ")
+print(numero)
+
+navegador.find_element_by_xpath('//*[@id="app"]/div[1]/div[2]/div/div[1]/div/div[1]/div/div[1]/input').send_keys(numero)
+sleep(4)
+navegador.find_element_by_class_name('sc-cNKqjZ ooloQ').click()
+
+navegador.find_element_by_xpath("//div[contains(text(), 'NOME COMPLETO')]")
 #clica na ultima conversa
-#navegador.find_element_by_xpath('//*[@id="app"]/div[1]/div[2]/div/div[1]/div/div[4]/div[1]/div/div/div[1]').click()
 
 # String exemplo
 stringMensagem = ("""NOME COMPLETO: joao costa silveira\n
@@ -49,3 +57,4 @@ navegador.get("https://app.maryhelp.net/clientes/cadastro")
 navegador.find_element_by_xpath('//*[@id="txtUser"]').send_keys("JOZEFALEIRO")
 navegador.find_element_by_xpath('//*[@id="txtPassword"]').send_keys("123456")
 navegador.find_element_by_xpath('//*[@id="login-form"]/button').click()
+
