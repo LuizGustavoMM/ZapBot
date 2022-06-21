@@ -10,7 +10,7 @@ from selenium import webdriver
 from time import sleep
 
 ### Variáveis de request globais
-urlGetContent = 'https://webhook.site/token/9fcab138-8daf-436a-bf83-91c87c93e8ba'
+urlGetContent = 'https://webhook.site/token/b9affd3d-e92d-447b-91da-417a5398d607'
 headers = CaseInsensitiveDict()
 headers["Accept"] = "application/json"
 
@@ -22,14 +22,16 @@ def main():
 ### Selecionar o cliente a ser cadastrado
 def selectCliente():
     content = json.loads((requests.get(urlGetContent+'/requests', headers=headers).content))
-    data = content['data']
+    data = (content['data'])
     nome = input("Insira o nome do cliente a ser cadastrado: ").lower()
 
     numFound = 0
     listaNomes = []
     for pessoa in data:
-        if nome in pessoa['content'].lower():
-            dados = (pessoa['content'])
+        filtroUm = json.loads(pessoa["content"])
+        filtroDois = filtroUm["data"]["message"]
+        if nome in filtroDois["text"].lower():
+            dados = (filtroDois["text"])
             nomeCompleto = (dados.partition('\n')[0])
             listaNomes.append((nomeCompleto.split(":")[1]))
             numFound = numFound + 1
@@ -70,8 +72,10 @@ def retrieveData():
     data = content['data']
 
     for pessoa in data:
-        if cliente in pessoa['content']:
-            dados = (pessoa['content'])
+        filtroUm = json.loads(pessoa["content"])
+        filtroDois = filtroUm["data"]["message"]
+        if cliente in filtroDois["text"]:
+            dados = (filtroDois["text"])
 
     # Script de formatação de dados
     linhas = []
