@@ -1,3 +1,4 @@
+from operator import contains
 import requests
 import json
 import sys
@@ -33,7 +34,10 @@ def selectCliente():
         if nome in filtroDois["text"].lower():
             dados = (filtroDois["text"])
             nomeCompleto = (dados.partition('\n')[0])
-            listaNomes.append((nomeCompleto.split(":")[1]))
+            if ":" in nomeCompleto:
+                listaNomes.append((nomeCompleto.split(":")[1]))
+            else:
+                listaNomes.append(nomeCompleto)
             numFound = numFound + 1
 
     try: # Exception handling caso não ache ninguém
@@ -80,6 +84,7 @@ def retrieveData():
     # Script de formatação de dados
     linhas = []
     linha = ''
+    print(dados)
     for char in dados:
         if char != '\n':
             linha += char
@@ -87,19 +92,27 @@ def retrieveData():
             linhas.append(linha)
             linha = ''
     for i in range(len(linhas)):
+        
         strLinha = linhas[i]
-        stringSpl = strLinha.split(":", 1)
-        stringSpace = stringSpl[1]
+        if ":" in strLinha:
+            stringSpl = strLinha.split(":", 1)
+            stringSpace = stringSpl[1]
+        else:
+            stringSpl = strLinha
+            stringSpace = stringSpl
         if (stringSpace[0] == ' '):
             string = stringSpace[1:]
         else:
             string = stringSpace
         linhas[i] = string
+        print(linhas[i])
     
     # Filtro para datas de aniversário erradas
     if linhas[2].count('/') == 2:
         linhas[2] = (linhas[2][:5])
 
+    i = 0
+    print(linhas[1])
     return linhas # Retorna linhas formatadas
 
 
