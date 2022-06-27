@@ -1,3 +1,4 @@
 selenium
 webdriver_manager
 reportlab
+PySimpleGUI
