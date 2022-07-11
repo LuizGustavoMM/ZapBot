@@ -33,12 +33,17 @@ def selectCliente():
         filtroDois = filtroUm["data"]["message"]
         if nome in filtroDois["text"].lower():
             dados = (filtroDois["text"])
-            nomeCompleto = (dados.partition('\n')[0])
+            print(dados.partition('\n')[1])
+            if "Dados" in dados.partition('\n')[0]:
+                nomeCompleto = (dados.partition('\n')[1])
+            else:
+                nomeCompleto = (dados.partition('\n')[0])
             if ":" in nomeCompleto:
                 listaNomes.append((nomeCompleto.split(":")[1]))
             else:
                 listaNomes.append(nomeCompleto)
             numFound = numFound + 1
+            print(filtroDois["text"])
 
     try: # Exception handling caso não ache ninguém
         if numFound > 1: # Case handling caso a busca retorne mais de um nome
@@ -92,7 +97,8 @@ def retrieveData():
             linhas.append(linha)
             linha = ''
     for i in range(len(linhas)):
-        
+        if "Dados da" in linhas[i]:
+            linhas.pop()
         strLinha = linhas[i]
         if ":" in strLinha:
             stringSpl = strLinha.split(":", 1)
@@ -113,50 +119,89 @@ def retrieveData():
 
     i = 0
     print(linhas[1])
+
     return linhas # Retorna linhas formatadas
-
-
 
 ### Registrar cliente no Maryhelp
 def registerCliente():
     dados = retrieveData()
+    if len(dados[1]) >= 11 and len(dados[1]) <= 14:
+    
+        chrome_options = Options()
+        chrome_options.add_experimental_option("detach", True)
+        navegador = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
 
-    chrome_options = Options()
-    chrome_options.add_experimental_option("detach", True)
-    navegador = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+        # Abrindo navegador e Maryhelp
+        navegador.get("https://app.maryhelp.net/clientes/cadastro")
+        navegador.maximize_window()
 
-    # Abrindo navegador e Maryhelp
-    navegador.get("https://app.maryhelp.net/clientes/cadastro")
-    navegador.maximize_window()
+        # Logando no Maryhelp
+        navegador.find_element_by_xpath('//*[@id="txtUser"]').send_keys("JOZEFALEIRO")
+        navegador.find_element_by_xpath('//*[@id="txtPassword"]').send_keys("123456")
+        navegador.find_element_by_xpath('//*[@id="login-form"]/button').click()
 
-    # Logando no Maryhelp
-    navegador.find_element_by_xpath('//*[@id="txtUser"]').send_keys("JOZEFALEIRO")
-    navegador.find_element_by_xpath('//*[@id="txtPassword"]').send_keys("123456")
-    navegador.find_element_by_xpath('//*[@id="login-form"]/button').click()
+        # Caso já tenha alguém conectado, confirmar login
+        try:
+            logado = navegador.find_element_by_xpath("//*[contains(text(), 'ATENÇÃO!')]")
+            if logado:
+                navegador.find_element_by_xpath('//*[@id="error_modal"]/div/div/div/div[2]/button[1]').click()
+        except:
+            pass
 
-    # Caso já tenha alguém conectado, confirmar login
-    try:
-        logado = navegador.find_element_by_xpath("//*[contains(text(), 'ATENÇÃO!')]")
-        if logado:
-            navegador.find_element_by_xpath('//*[@id="error_modal"]/div/div/div/div[2]/button[1]').click()
-    except:
-        pass
+        navegador.get("https://app.maryhelp.net/clientes/cadastro")
+        sleep(2)
 
-    navegador.get("https://app.maryhelp.net/clientes/cadastro")
-    sleep(2)
+        # Selecionando pessoa física
+        navegador.find_element_by_xpath('//*[@id="TypePhysics"]').click()
+        sleep(3)
 
-    # Selecionando pessoa física
-    navegador.find_element_by_xpath('//*[@id="TypePhysics"]').click()
-    sleep(3)
+        # Inserindo dados nos campos
+        navegador.find_element_by_xpath('//*[@id="txtName"]').send_keys(dados[0])
+        navegador.find_element_by_xpath('//*[@id="txtCPF"]').send_keys(Keys.HOME, dados[1])
+        navegador.find_element_by_xpath('//*[@id="txtBirthDate"]').send_keys(Keys.HOME, dados[2])
+        navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[3])
+        navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(Keys.HOME, dados[4])
+        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[2]/div/input').send_keys(dados[6])
+        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[5])
 
-    # Inserindo dados nos campos
-    navegador.find_element_by_xpath('//*[@id="txtName"]').send_keys(dados[0])
-    navegador.find_element_by_xpath('//*[@id="txtCPF"]').send_keys(Keys.HOME, dados[1])
-    navegador.find_element_by_xpath('//*[@id="txtBirthDate"]').send_keys(Keys.HOME, dados[2])
-    navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[3])
-    navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(Keys.HOME, dados[4])
-    navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[2]/div/input').send_keys(dados[6])
-    navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[5])
+    else:
+        chrome_options = Options()
+        chrome_options.add_experimental_option("detach", True)
+        navegador = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+
+        # Abrindo navegador e Maryhelp
+        navegador.get("https://app.maryhelp.net/clientes/cadastro")
+        navegador.maximize_window()
+
+        # Logando no Maryhelp
+        navegador.find_element_by_xpath('//*[@id="txtUser"]').send_keys("JOZEFALEIRO")
+        navegador.find_element_by_xpath('//*[@id="txtPassword"]').send_keys("123456")
+        navegador.find_element_by_xpath('//*[@id="login-form"]/button').click()
+
+        # Caso já tenha alguém conectado, confirmar login
+        try:
+            logado = navegador.find_element_by_xpath("//*[contains(text(), 'ATENÇÃO!')]")
+            if logado:
+                navegador.find_element_by_xpath('//*[@id="error_modal"]/div/div/div/div[2]/button[1]').click()
+        except:
+            pass
+
+        navegador.get("https://app.maryhelp.net/clientes/cadastro")
+        sleep(2)
+
+        # Selecionando pessoa física
+        navegador.find_element_by_xpath('//*[@id="TypeLegal"]"]').click()
+        sleep(3)
+
+        # Inserindo dados nos campos
+        navegador.find_element_by_xpath('//*[@id="txtCorporateName"]').send_keys(dados[0])
+        navegador.find_element_by_xpath('//*[@id="txtCNPJ"]').send_keys(Keys.HOME, dados[1])
+        navegador.find_element_by_xpath('//*[@id="txtNameRepresentative"]').send_keys(Keys.HOME, dados[2])
+        navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[3])
+        navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(Keys.HOME, dados[4])
+        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[2]/div/input').send_keys(dados[6])
+        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[5])
+
 
 if __name__ == "__main__":
     main()
