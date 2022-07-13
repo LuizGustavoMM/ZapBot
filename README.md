@@ -7,7 +7,7 @@ Bot de Whatsapp integrado ao Digisac utilizando o webhook.site
 `python zapbot.py`
 
 ### Links de referência
-- https://webhook.site/#!/9fcab138-8daf-436a-bf83-91c87c93e8ba/85b9d294-90bc-4759-9923-d37b7fcb04d5/1
+- https://webhook.site/#!/b9affd3d-e92d-447b-91da-417a5398d607
 - https://app.maryhelp.net/
 - https://maryhelpflorianopolis.mandeumzap.com.br/
 - https://www.youtube.com/watch?v=BvqgJDEdkts&ab_channel=EscoladeDevs

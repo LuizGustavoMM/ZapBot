@@ -175,7 +175,5 @@ def registerCliente():
     navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[2]/div/input').send_keys(dados[6])
     navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[5])
 
-    return "Ok"
-
 if __name__ == "__main__":
     main()

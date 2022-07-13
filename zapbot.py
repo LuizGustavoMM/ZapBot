@@ -203,6 +203,8 @@ elif escolha == 'pj':
         linhas = []
         linha = ''
         print(dados)
+        dados = dados+"\n"
+        print(dados)
         for char in dados:
             if char != '\n':
                 linha += char
@@ -210,7 +212,6 @@ elif escolha == 'pj':
                 linhas.append(linha)
                 linha = ''
         for i in range(len(linhas)):
-            
             strLinha = linhas[i]
             if ":" in strLinha:
                 stringSpl = strLinha.split(":", 1)
@@ -226,7 +227,6 @@ elif escolha == 'pj':
             print(linhas[i])
 
         i = 0
-        print(linhas[1])
 
         dados = linhas
 
@@ -255,17 +255,17 @@ elif escolha == 'pj':
         sleep(2)
 
         # Selecionando pessoa física
-        navegador.find_element_by_xpath('//*[@id="TypePhysics"]').click()
-        sleep(3)
-
+        navegador.find_element_by_xpath('//*[@id="TypeLegal"]').click()
+        sleep(5)
         # Inserindo dados nos campos
-        navegador.find_element_by_xpath('//*[@id="txtCorporateName"]"]').send_keys(dados[0])
+        navegador.find_element_by_xpath('//*[@id="txtCorporateName"]').send_keys(dados[0])
         navegador.find_element_by_xpath('//*[@id="txtCNPJ"]').send_keys(Keys.HOME, dados[1])
+        navegador.find_element_by_xpath('//*[@id="txtNameRepresentative"]').send_keys(Keys.HOME, dados[5])
+        navegador.find_element_by_xpath('//*[@id="txtCPFRepresentative"]').send_keys(Keys.HOME, dados[6])
+        navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[7])
+        navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(Keys.HOME, dados[8])
         navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(Keys.HOME, dados[2])
-        navegador.find_element_by_xpath('//*[@id="txtNameRepresentative"]').send_keys(dados[3])
-        navegador.find_element_by_xpath('//*[@id="txtCPFRepresentative"]').send_keys(Keys.HOME, dados[4])
-        navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[5])
-        navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(dados[6])
+
 else:
     print('Escolha incorreta!')
     sleep(10)
