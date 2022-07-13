@@ -18,11 +18,8 @@ headers["Accept"] = "application/json"
 escolha = input("Insira PF para cadastrar uma pessoa física ou PJ para uma pessoa jurídica: ").lower()
 
 if escolha == 'pf':
-    def main():
-        registerCliente()
 
 ### Selecionar o cliente a ser cadastrado
-    def registerCliente():
         content = json.loads((requests.get(urlGetContent+'/requests', headers=headers).content))
         data = (content['data'])
         nome = input("Insira o nome do cliente a ser cadastrado: ").lower()
@@ -149,7 +146,6 @@ if escolha == 'pf':
         navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[5])
 
 elif escolha == 'pj':
-    def registerCliente():
         content = json.loads((requests.get(urlGetContent+'/requests', headers=headers).content))
         data = (content['data'])
         nome = input("Insira o nome do cliente a ser cadastrado: ").lower()
@@ -273,5 +269,4 @@ elif escolha == 'pj':
 else:
     print('Escolha incorreta!')
     sleep(10)
-if __name__ == "__main__":
-    main()
+
