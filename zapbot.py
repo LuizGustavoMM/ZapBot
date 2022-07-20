@@ -139,11 +139,10 @@ if escolha == 'pf':
         # Inserindo dados nos campos
         navegador.find_element_by_xpath('//*[@id="txtName"]').send_keys(dados[0])
         navegador.find_element_by_xpath('//*[@id="txtCPF"]').send_keys(Keys.HOME, dados[1])
-        navegador.find_element_by_xpath('//*[@id="txtBirthDate"]').send_keys(Keys.HOME, dados[2])
-        navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[3])
-        navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(Keys.HOME, dados[4])
-        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[2]/div/input').send_keys(dados[6])
-        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[5])
+        navegador.find_element_by_xpath('//*[@id="txtEmail"]').send_keys(dados[2])
+        navegador.find_element_by_xpath('//*[@id="txtNumber"]').send_keys(Keys.HOME, dados[3])
+        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[2]/div/input').send_keys(dados[5])
+        navegador.find_element_by_xpath('//*[@id="divInfPess-Content"]/div[7]/div[1]/div[3]/div/input').send_keys(dados[4])
 
 elif escolha == 'pj':
         content = json.loads((requests.get(urlGetContent+'/requests', headers=headers).content))
