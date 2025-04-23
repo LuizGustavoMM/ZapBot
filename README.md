@@ -1,4 +1,4 @@
-# Maryhelper Zapbot
+# Zapbot
 Bot de Whatsapp integrado ao Digisac utilizando o webhook.site
 
 ### Utilização e instalação
